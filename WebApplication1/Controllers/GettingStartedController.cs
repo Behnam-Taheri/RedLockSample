@@ -8,11 +8,11 @@ namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ValuesController : ControllerBase
+    public class GettingStartedController : ControllerBase
     {
         private static ConnectionMultiplexer _connectionMultiplexer;
         private static IDatabase _db;
-        static ValuesController()
+        static GettingStartedController()
         {
             _connectionMultiplexer = ConnectionMultiplexer.Connect("localhost:6379");
             _db = _connectionMultiplexer.GetDatabase();
