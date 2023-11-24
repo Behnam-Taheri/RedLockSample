@@ -1,11 +1,25 @@
+using RedLockNet.SERedis.Configuration;
+using RedLockNet.SERedis;
+using RedLockNet;
+using StackExchange.Redis;
+using Microsoft.Extensions.Options;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+var connectionMultiplexer = ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnectionString"));
+builder.Services.AddSingleton<IConnectionMultiplexer>(connectionMultiplexer);
+builder.Services.AddScoped(ctx => ctx.GetRequiredService<IConnectionMultiplexer>().GetDatabase());
+
+var multiplexers = new List<RedLockMultiplexer> {connectionMultiplexer};
+
+var redLockFactory = RedLockFactory.Create(multiplexers);
+
+builder.Services.AddSingleton<IDistributedLockFactory>(redLockFactory);
 
 var app = builder.Build();
 

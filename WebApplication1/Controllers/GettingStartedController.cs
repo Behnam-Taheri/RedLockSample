@@ -14,13 +14,13 @@ namespace WebApplication1.Controllers
         private static IDatabase _db;
         static ValuesController()
         {
-            _connectionMultiplexer = ConnectionMultiplexer.Connect("9704a3c9-0a2e-4e7a-8d05-5fa4afba616b.hsvc.ir:31122,password=iOgYB5bLlPvof81pJPgneeHaDWF47MGv");
+            _connectionMultiplexer = ConnectionMultiplexer.Connect("localhost:6379");
             _db = _connectionMultiplexer.GetDatabase();
             _db.StringGetSet("Behnam", 1);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Post()
+        public async Task<IActionResult> Get()
         {
             var taskid = Guid.NewGuid().ToString();
             try
@@ -33,9 +33,9 @@ namespace WebApplication1.Controllers
             {
                 _connectionMultiplexer
             };
-                var redlockFactory = RedLockFactory.Create(multiplexers);
+                var redLockFactory = RedLockFactory.Create(multiplexers);
 
-                using var redLock = await redlockFactory.CreateLockAsync("Behnam", expiry, wait, retry);
+                using var redLock = await redLockFactory.CreateLockAsync("Behnam", expiry, wait, retry);
 
                 var id = "";
                 if (redLock.IsAcquired)
